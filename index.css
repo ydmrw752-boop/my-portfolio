@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #070605;
+  --paper: #efe9df;
+  --gold: #e0a44a;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+section[id] {
+  scroll-margin-top: 4.5rem;
+}
+::selection {
+  background: rgba(224, 164, 74, 0.35);
+  color: #fff;
+}
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-[88rem] px-5 sm:px-8 lg:px-14;
+  }
+  .h-section {
+    @apply font-display text-[clamp(2.75rem,7.5vw,6rem)] leading-[0.95] tracking-tight;
+  }
+  .btn {
+    @apply inline-flex min-h-[3rem] items-center justify-center gap-2 px-6 text-[0.95rem] font-medium transition-colors duration-300;
+  }
+}
+
+/* One orchestrated moment: the hero lines rise in, then supporting items fade. */
+.line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+.line > span {
+  display: block;
+  transform: translateY(105%);
+  animation: rise 1.1s var(--ease) forwards;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes rise {
+  to {
+    transform: none;
+  }
+}
+.fade-in {
+  opacity: 0;
+  animation: fade 0.9s ease forwards;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes fade {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Scroll reveal (kept light). */
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.8s ease, transform 0.8s var(--ease);
+  transition-delay: var(--d, 0ms);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Case-study open. */
+@keyframes cs-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.cs-in {
+  animation: cs-in 0.45s var(--ease) both;
+}
+
+/* Workflow rail: draws itself as each step enters view. */
+.step {
+  position: relative;
+  padding-top: 1.5rem;
+}
+.step::before,
+.step::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+.step::before {
+  background: rgba(239, 233, 223, 0.12);
+}
+.step::after {
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.1s var(--ease);
+  transition-delay: var(--d, 0ms);
+}
+.step.is-in::after {
+  transform: scaleX(1);
+}
+@media (max-width: 1023px) {
+  .step {
+    padding: 0 0 2rem 1.5rem;
+  }
+  .step::before,
+  .step::after {
+    top: 0;
+    bottom: 0;
+    right: auto;
+    width: 1px;
+    height: auto;
+  }
+  .step::after {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  .step.is-in::after {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .line > span,
+  .fade-in {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .step::after {
+    transition: none;
+  }
+  .cs-in {
+    animation: none;
+  }
+}
